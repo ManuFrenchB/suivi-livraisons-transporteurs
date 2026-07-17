@@ -4,8 +4,7 @@
 fetch_sharepoint.py - Recupere le CSV Bonx depuis SharePoint (French Bloom)
 
 Telecharge le dernier « Monitoring Expeditions.csv » depuis SharePoint via
-Microsoft Graph (authentification applicative client_credentials), puis le
-convertit au format attendu par scraper_tracking.py (commandes.csv).
+Microsoft Graph, puis le convertit au format attendu par scraper_tracking.py.
 
 Ecrit DEUX fichiers :
   - monitoring_expeditions.csv : copie brute du fichier SharePoint
@@ -14,12 +13,12 @@ Ecrit DEUX fichiers :
 Seules les commandes NON encore livrees (date_livraison_reelle vide) passent au scraper.
 Une commande peut arriver en 2 fois (lien puis MAJ EDI) : on garde la version avec URL.
 
-Variables d'environnement (reutilise les secrets de ton app "Export Stock ERP") :
+Variables d'environnement :
   MS_TENANT_ID / MS_CLIENT_ID / MS_CLIENT_SECRET   (obligatoires ; alias AZURE_* acceptes)
   SP_HOSTNAME   defaut: frenchbloom75.sharepoint.com
   SP_SITE_PATH  defaut: /sites/Exportlogistique
   SP_FILE_NAME  defaut: Monitoring Expeditions.csv
-  SP_DRIVE_ID   optionnel: force un drive precis
+  SP_DRIVE_ID   optionnel
 
 Dependances : pip install msal requests
 """
@@ -34,23 +33,25 @@ import msal
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 
-SRC = {
-    "commande": "fnumero_commande",
-    "lien_bonx": "lien_bonx",
-    "transporteur": "transporteur",
-    "numero_suivi": "numero_suivi",
-    "date_souh": "date_livraison_souhaitee",
-    "date_souh_p1": "date_souhaitee_plus_1j_ouvre",
-    "date_reelle": "date_livraison_reelle",
-    "pays": "rpays",
-    "ville": "ville",
-    "pipeline": "pipeline",
-    "statut": "statut",
-}
+# Alias de colonnes tolerees (le vrai fichier utilise numero_commande / pays)
+COMMANDE = ("numero_commande", "fnumero_commande")
+LIEN_BONX = ("lien_bonx",)
+TRANSPORTEUR = ("transporteur",)
+NUMERO_SUIVI = ("numero_suivi",)
+DATE_SOUH = ("date_livraison_souhaitee",)
+DATE_SOUH_P1 = ("date_souhaitee_plus_1j_ouvre",)
+DATE_REELLE = ("date_livraison_reelle",)
+
+
+def val(row, keys):
+    for k in keys:
+        v = row.get(k)
+        if v is not None and str(v).strip() != "":
+            return str(v).strip()
+    return ""
 
 
 def env_any(*names, required=False, default=None):
-    """Premiere variable d'env NON VIDE parmi names (ex: MS_* puis AZURE_*)."""
     for n in names:
         v = os.environ.get(n)
         if v:
@@ -61,7 +62,6 @@ def env_any(*names, required=False, default=None):
 
 
 def env_default(name, default):
-    """Valeur de l'env si non vide, sinon le defaut (une chaine vide -> defaut)."""
     v = os.environ.get(name)
     return v if (v and v.strip()) else default
 
@@ -76,10 +76,8 @@ def get_token():
     client_id = env_any("MS_CLIENT_ID", "AZURE_CLIENT_ID", required=True)
     secret = env_any("MS_CLIENT_SECRET", "AZURE_CLIENT_SECRET", required=True)
     app = msal.ConfidentialClientApplication(
-        client_id=client_id,
-        client_credential=secret,
-        authority="https://login.microsoftonline.com/" + tenant,
-    )
+        client_id=client_id, client_credential=secret,
+        authority="https://login.microsoftonline.com/" + tenant)
     res = app.acquire_token_for_client(scopes=["https://graph.microsoft.com/.default"])
     if "access_token" not in res:
         raise RuntimeError("Auth Graph echouee : " + str(res.get("error_description", res)))
@@ -105,7 +103,7 @@ def find_file(token, site_id, drive_id, file_name):
 
     stem = file_name.rsplit(".", 1)[0]
     stem_norm = sans_accents(stem).lower()
-    q = sans_accents(stem)  # requete sans accent (evite les soucis d'encodage URL)
+    q = sans_accents(stem)
     best = None
     for d in drives:
         try:
@@ -115,8 +113,7 @@ def find_file(token, site_id, drive_id, file_name):
         for item in r.json().get("value", []):
             name = item.get("name", "")
             name_norm = sans_accents(name).lower()
-            is_csv = name_norm.endswith(".csv")
-            if item.get("file") and is_csv and name_norm.startswith(stem_norm):
+            if item.get("file") and name_norm.endswith(".csv") and name_norm.startswith(stem_norm):
                 lm = item.get("lastModifiedDateTime", "")
                 if best is None or lm > best[0]:
                     best = (lm, d, item["id"], name)
@@ -138,25 +135,25 @@ def download_csv(token, drive_id, item_id):
 
 def detect_delim(text):
     head = text.splitlines()[0] if text else ""
-    return ";" if head.count(";") >= head.count(",") else ","
+    counts = {",": head.count(","), ";": head.count(";"), "\t": head.count("\t")}
+    return max(counts, key=counts.get)
 
 
 def to_commandes(rows):
-    """Mappe vers le format scraper, hors commandes livrees, avec dedoublonnage."""
     par_cmd = {}
     for r in rows:
-        if (r.get(SRC["date_reelle"]) or "").strip():
-            continue
-        cmd = (r.get(SRC["commande"]) or "").strip()
+        if val(r, DATE_REELLE):
+            continue  # deja livree
+        cmd = val(r, COMMANDE)
         if not cmd:
             continue
-        suivi = (r.get(SRC["numero_suivi"]) or "").strip()
+        suivi = val(r, NUMERO_SUIVI)
         lien = suivi if suivi.lower().startswith(("http://", "https://")) else ""
         cur = {
             "numero_commande": cmd,
-            "transporteur": (r.get(SRC["transporteur"]) or "").strip(),
+            "transporteur": val(r, TRANSPORTEUR),
             "lien_tracking": lien,
-            "date_prevue": (r.get(SRC["date_souh_p1"]) or r.get(SRC["date_souh"]) or "").strip(),
+            "date_prevue": val(r, DATE_SOUH_P1) or val(r, DATE_SOUH),
         }
         prev = par_cmd.get(cmd)
         if prev is None or (not prev["lien_tracking"] and lien):
@@ -182,7 +179,7 @@ def main():
     delim = detect_delim(text)
     rows = [{(k or "").strip(): v for k, v in r.items()}
             for r in csv.DictReader(io.StringIO(text), delimiter=delim)]
-    print(str(len(rows)) + " lignes lues depuis SharePoint")
+    print(str(len(rows)) + " lignes lues depuis SharePoint (separateur '" + repr(delim) + "')")
 
     commandes = to_commandes(rows)
     with open("commandes.csv", "w", encoding="utf-8-sig", newline="") as f:

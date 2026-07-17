@@ -3,20 +3,12 @@
 """
 rapport_mail.py - Genere le rapport de suivi et l'envoie par mail (French Bloom)
 
-Fusionne :
-  - monitoring_expeditions.csv  (liste complete des commandes, depuis SharePoint)
-  - suivi_resultats.csv         (statuts scrapes par scraper_tracking.py)
+Fusionne monitoring_expeditions.csv (SharePoint) + suivi_resultats.csv (scraper),
+produit un Excel priorise (retards en tete) et l'envoie par mail via Graph.
 
-Produit :
-  - suivi_livraisons_<AAAA-MM-JJ>.xlsx  (rapport priorise, retards en tete)
-  - un email HTML avec ce fichier en piece jointe, envoye via Microsoft Graph.
-
-Variables d'environnement (reutilise les secrets de l'app "Export Stock ERP") :
+Variables d'environnement :
   MS_TENANT_ID / MS_CLIENT_ID / MS_CLIENT_SECRET   (alias AZURE_* acceptes)
-  SEND_MAIL     "1" pour envoyer (sinon on genere juste le fichier + apercu HTML)
-  RAPPORT_FROM  boite expeditrice (UPN)
-  RAPPORT_TO    destinataires (virgules)
-  RAPPORT_CC    optionnel
+  SEND_MAIL "1" pour envoyer ; RAPPORT_FROM ; RAPPORT_TO ; RAPPORT_CC (option)
 
 Dependances : pip install msal requests openpyxl
 """
@@ -33,17 +25,20 @@ from openpyxl.utils import get_column_letter
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 
-SRC = {
-    "commande": "fnumero_commande", "lien_bonx": "lien_bonx",
-    "transporteur": "transporteur", "numero_suivi": "numero_suivi",
-    "date_souh": "date_livraison_souhaitee", "date_souh_p1": "date_souhaitee_plus_1j_ouvre",
-    "date_reelle": "date_livraison_reelle", "pays": "rpays", "ville": "ville",
-    "pipeline": "pipeline", "statut": "statut",
-}
+# Alias de colonnes tolerees (le vrai fichier utilise numero_commande / pays)
+COMMANDE = ("numero_commande", "fnumero_commande")
+LIEN_BONX = ("lien_bonx",)
+TRANSPORTEUR = ("transporteur",)
+NUMERO_SUIVI = ("numero_suivi",)
+DATE_SOUH = ("date_livraison_souhaitee",)
+DATE_SOUH_P1 = ("date_souhaitee_plus_1j_ouvre",)
+DATE_REELLE = ("date_livraison_reelle",)
+PAYS = ("pays", "rpays")
+VILLE = ("ville",)
+PIPELINE = ("pipeline",)
 
 DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%y", "%Y/%m/%d")
 
-# Libelles de statut (avec accents, alignes sur ceux du scraper)
 ST_INCIDENT = "Incident"
 ST_RETARD = "En retard"
 ST_AVERIF = "À vérifier"
@@ -55,6 +50,14 @@ ST_INDET = "Indéterminé"
 PRIORITE = {ST_INCIDENT: 0, ST_RETARD: 1, ST_AVERIF: 2, ST_ENCOURS: 3,
             ST_LIVRE_RET: 4, ST_LIVRE: 5, ST_INDET: 6}
 ORDRE = [ST_INCIDENT, ST_RETARD, ST_AVERIF, ST_ENCOURS, ST_LIVRE_RET, ST_LIVRE, ST_INDET]
+
+
+def val(row, keys):
+    for k in keys:
+        v = row.get(k)
+        if v is not None and str(v).strip() != "":
+            return str(v).strip()
+    return ""
 
 
 def env_any(*names, required=False, default=None):
@@ -89,7 +92,8 @@ def read_csv(path):
             with open(path, encoding=enc, newline="") as f:
                 sample = f.read(4096)
                 f.seek(0)
-                delim = ";" if sample.count(";") >= sample.count(",") else ","
+                c = {",": sample.count(","), ";": sample.count(";"), "\t": sample.count("\t")}
+                delim = max(c, key=c.get)
                 return [{(k or "").strip(): v for k, v in r.items()}
                         for r in csv.DictReader(f, delimiter=delim)]
         except UnicodeDecodeError:
@@ -109,15 +113,13 @@ def normaliser_scraper(raw):
         return ST_LIVRE
     if "cours" in t or "transit" in t:
         return ST_ENCOURS
-    if "verif" in t or "vérif" in t:
-        return ST_AVERIF
     return ST_AVERIF
 
 
 def statut_final(row, scrap, auj):
-    d_souh = parse_date(row.get(SRC["date_souh"]))
-    d_p1 = parse_date(row.get(SRC["date_souh_p1"])) or d_souh
-    d_reel = parse_date(row.get(SRC["date_reelle"]))
+    d_souh = parse_date(val(row, DATE_SOUH))
+    d_p1 = parse_date(val(row, DATE_SOUH_P1)) or d_souh
+    d_reel = parse_date(val(row, DATE_REELLE))
     if d_reel is not None:
         ref = d_p1 or d_souh
         if ref and d_reel > ref:
@@ -161,8 +163,8 @@ ENT = ["N° commande", "Statut", "Jours de retard", "Transporteur", "Statut tran
 
 
 def _rang(m):
-    livree = 1 if (m.get(SRC["date_reelle"]) or "").strip() else 0
-    suivi = (m.get(SRC["numero_suivi"]) or "").strip().lower()
+    livree = 1 if val(m, DATE_REELLE) else 0
+    suivi = val(m, NUMERO_SUIVI).lower()
     url = 1 if suivi.startswith(("http://", "https://")) else 0
     return (livree, url)
 
@@ -174,28 +176,28 @@ def build_rows(auj):
 
     dedup = {}
     for m in master:
-        cmd = (m.get(SRC["commande"]) or "").strip()
+        cmd = val(m, COMMANDE)
         if cmd and (cmd not in dedup or _rang(m) >= _rang(dedup[cmd])):
             dedup[cmd] = m
     master = list(dedup.values())
 
     rows = []
     for m in master:
-        cmd = (m.get(SRC["commande"]) or "").strip()
+        cmd = val(m, COMMANDE)
         s = scrap.get(cmd)
         statut, jr = statut_final(m, s, auj)
         rows.append({
             "cmd": cmd, "statut": statut, "jr": jr,
-            "transp": (m.get(SRC["transporteur"]) or "").strip(),
+            "transp": val(m, TRANSPORTEUR),
             "statut_transp": (s or {}).get("statut_brut", "").strip() if s else "",
-            "suivi": (m.get(SRC["numero_suivi"]) or "").strip(),
-            "pays": (m.get(SRC["pays"]) or "").strip(),
-            "ville": (m.get(SRC["ville"]) or "").strip(),
-            "d_souh": (m.get(SRC["date_souh"]) or "").strip(),
-            "d_p1": (m.get(SRC["date_souh_p1"]) or "").strip(),
-            "d_reel": (m.get(SRC["date_reelle"]) or "").strip(),
-            "pipeline": (m.get(SRC["pipeline"]) or "").strip(),
-            "lien_bonx": (m.get(SRC["lien_bonx"]) or "").strip(),
+            "suivi": val(m, NUMERO_SUIVI),
+            "pays": val(m, PAYS),
+            "ville": val(m, VILLE),
+            "d_souh": val(m, DATE_SOUH),
+            "d_p1": val(m, DATE_SOUH_P1),
+            "d_reel": val(m, DATE_REELLE),
+            "pipeline": val(m, PIPELINE),
+            "lien_bonx": val(m, LIEN_BONX),
         })
     rows.sort(key=lambda r: (PRIORITE.get(r["statut"], 9), -r["jr"]))
     return rows
@@ -290,8 +292,7 @@ def get_token():
     client_id = env_any("MS_CLIENT_ID", "AZURE_CLIENT_ID", required=True)
     secret = env_any("MS_CLIENT_SECRET", "AZURE_CLIENT_SECRET", required=True)
     app = msal.ConfidentialClientApplication(
-        client_id=client_id,
-        client_credential=secret,
+        client_id=client_id, client_credential=secret,
         authority="https://login.microsoftonline.com/" + tenant)
     res = app.acquire_token_for_client(scopes=["https://graph.microsoft.com/.default"])
     if "access_token" not in res:
