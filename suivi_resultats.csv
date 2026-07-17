@@ -1,0 +1,15 @@
+﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_extraction
+CMD-01;HEP;https://myportal.heppner-group.com/tracking/UOEyNjE3MyYzMzEyMCZGUg%3D%3D;;;À vérifier;0;2026-07-17 14:12
+CMD-02;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=kUNmSwaPlEGMoX11x;;;À vérifier;0;2026-07-17 14:12
+CMD-03;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=;;;À vérifier;0;2026-07-17 14:13
+CMD-04;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=5SlDG93xLWQ9wbHGt;;Livré;Livré;0;2026-07-17 14:13
+CMD-05;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=;;;À vérifier;0;2026-07-17 14:13
+CMD-06;HEP;https://myportal.heppner-group.com/tracking/UOEyNjE3MiYzMzEyMCZGUg%3D%3D;;;À vérifier;0;2026-07-17 14:13
+CMD-07;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=;;;À vérifier;0;2026-07-17 14:13
+CMD-08;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26754;;[ERREUR: TimeoutError];En cours;0;2026-07-17 14:13
+CMD-09;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=H3Az9AVSBtXaoegMg;;Livré;Livré;0;2026-07-17 14:14
+CMD-10;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=sn6s4YkQQOVOaojZp;;;À vérifier;0;2026-07-17 14:14
+CMD-11;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=yXUAAmOk1aBuby3BQ;;;À vérifier;0;2026-07-17 14:14
+CMD-12;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=TDal7CEo4MKblkSwO;;;À vérifier;0;2026-07-17 14:14
+CMD-13;DHL;;;;À vérifier;0;2026-07-17 14:14
+CMD-14;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26760;;[ERREUR: TimeoutError];En cours;0;2026-07-17 14:14
