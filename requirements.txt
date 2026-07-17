@@ -1,4 +1,6 @@
-- name: Installer les dependances
-        run: |
-          pip install -r requirements.txt
-          python -m playwright install --with-deps chromium
+playwright
+pandas
+python-dateutil
+openpyxl
+msal
+requests
