@@ -1,11 +1,11 @@
 name: Suivi livraisons
 
 # Declenchement : 2x/jour en semaine, ~10 min apres les alertes Bonx (8h / 14h).
-# ATTENTION : les crons GitHub sont en UTC. Paris = UTC+2 en ete (CEST), UTC+1 en hiver (CET).
+# Les crons GitHub sont en UTC. Paris = UTC+2 en ete (CEST), UTC+1 en hiver (CET).
 #   Ete   : 8h20 Paris = 06:20 UTC   |  14h20 Paris = 12:20 UTC
 #   Hiver : 8h20 Paris = 07:20 UTC   |  14h20 Paris = 13:20 UTC
-# Les deux paires sont posees ci-dessous ; un garde-fou ne laisse le job aller
-# au bout qu'aux heures locales 8h/14h (ou en lancement manuel).
+# Un garde-fou ne laisse le job aller au bout qu'aux heures locales 8h/14h
+# (ou en lancement manuel via "Run workflow").
 on:
   schedule:
     - cron: "20 6,12 * * 1-5"   # ete (CEST)
