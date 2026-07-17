@@ -1,0 +1,92 @@
+name: Suivi livraisons
+
+# Declenchement : 2x/jour en semaine, ~10 min apres les alertes Bonx (8h / 14h).
+# ATTENTION : les crons GitHub sont en UTC. Paris = UTC+2 en ete (CEST), UTC+1 en hiver (CET).
+#   Ete   : 8h20 Paris = 06:20 UTC   |  14h20 Paris = 12:20 UTC
+#   Hiver : 8h20 Paris = 07:20 UTC   |  14h20 Paris = 13:20 UTC
+# Les deux paires sont posees ci-dessous ; un garde-fou ne laisse le job aller
+# au bout qu'aux heures locales 8h/14h (ou en lancement manuel).
+on:
+  schedule:
+    - cron: "20 6,12 * * 1-5"   # ete (CEST)
+    - cron: "20 7,13 * * 1-5"   # hiver (CET)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  suivi:
+    runs-on: ubuntu-latest
+    env:
+      # --- App Azure AD reutilisee depuis "stock-pipeline-french-bloom" ---
+      MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+      MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+      MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+      # --- SharePoint (defauts codes dans fetch_sharepoint.py, surchargeables) ---
+      SP_HOSTNAME: ${{ vars.SP_HOSTNAME }}
+      SP_SITE_PATH: ${{ vars.SP_SITE_PATH }}
+      SP_FILE_NAME: ${{ vars.SP_FILE_NAME }}
+      SP_DRIVE_ID: ${{ vars.SP_DRIVE_ID }}
+      # --- Email ---
+      SEND_MAIL: "1"
+      RAPPORT_FROM: ${{ secrets.RAPPORT_FROM }}
+      RAPPORT_TO: ${{ secrets.RAPPORT_TO }}
+      RAPPORT_CC: ${{ secrets.RAPPORT_CC }}
+
+    steps:
+      - name: Verifier l'heure de Paris
+        id: gate
+        run: |
+          H=$(TZ=Europe/Paris date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$H" = "08" ] || [ "$H" = "14" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "Heure Paris=$H : run ignore (decalage saisonnier UTC)."
+          fi
+
+      - if: steps.gate.outputs.go == 'true'
+        uses: actions/checkout@v4
+
+      - if: steps.gate.outputs.go == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dependances
+        if: steps.gate.outputs.go == 'true'
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Recuperer le CSV depuis SharePoint
+        if: steps.gate.outputs.go == 'true'
+        run: python fetch_sharepoint.py
+
+      - name: Scraper les statuts transporteurs
+        if: steps.gate.outputs.go == 'true'
+        run: python scraper_tracking.py commandes.csv suivi_resultats.csv
+
+      - name: Generer le rapport et envoyer le mail
+        if: steps.gate.outputs.go == 'true'
+        run: python rapport_mail.py
+
+      - name: Archiver le rapport (artifact)
+        if: always() && steps.gate.outputs.go == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: suivi-livraisons
+          path: |
+            suivi_livraisons_*.xlsx
+            suivi_resultats.csv
+          if-no-files-found: ignore
+
+      - name: Historiser suivi_resultats.csv
+        if: success() && steps.gate.outputs.go == 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add suivi_resultats.csv || true
+          git commit -m "MAJ statuts livraisons ($(date +%F))" || echo "rien a committer"
+          git push || true
