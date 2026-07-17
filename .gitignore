@@ -1,23 +1,14 @@
-# Données réelles (ne pas versionner)
-commandes.csv
-suivi_resultats.csv
-*.local.csv
+# NB: en mode GitHub Actions, commandes.csv et suivi_resultats.csv sont versionnes.
+# => Le depot DOIT etre prive.
 
-# Sorties Excel générées (garder uniquement le gabarit dans templates/)
-/Suivi_livraisons_*.xlsx
-
-# Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 .env
-
-# Playwright
 playwright-report/
 .cache/
-
-# OS / IDE
+/Suivi_livraisons_*.xlsx
 .DS_Store
 Thumbs.db
 .vscode/
