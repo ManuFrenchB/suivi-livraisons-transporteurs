@@ -28,6 +28,7 @@ import os
 import sys
 import csv
 import io
+import unicodedata
 import requests
 import msal
 
@@ -49,7 +50,7 @@ SRC = {
 
 
 def env_any(*names, required=False, default=None):
-    """Premiere variable d'env non vide parmi names (ex: MS_* puis AZURE_*)."""
+    """Premiere variable d'env NON VIDE parmi names (ex: MS_* puis AZURE_*)."""
     for n in names:
         v = os.environ.get(n)
         if v:
@@ -57,6 +58,17 @@ def env_any(*names, required=False, default=None):
     if required:
         raise KeyError("Variable manquante : " + " / ".join(names))
     return default
+
+
+def env_default(name, default):
+    """Valeur de l'env si non vide, sinon le defaut (une chaine vide -> defaut)."""
+    v = os.environ.get(name)
+    return v if (v and v.strip()) else default
+
+
+def sans_accents(s):
+    return "".join(c for c in unicodedata.normalize("NFD", s or "")
+                   if unicodedata.category(c) != "Mn")
 
 
 def get_token():
@@ -92,20 +104,25 @@ def find_file(token, site_id, drive_id, file_name):
         drives = [d["id"] for d in r.json().get("value", [])]
 
     stem = file_name.rsplit(".", 1)[0]
+    stem_norm = sans_accents(stem).lower()
+    q = sans_accents(stem)  # requete sans accent (evite les soucis d'encodage URL)
     best = None
     for d in drives:
         try:
-            r = gget(GRAPH + "/drives/" + d + "/root/search(q='" + stem + "')", token)
+            r = gget(GRAPH + "/drives/" + d + "/root/search(q='" + q + "')", token)
         except requests.HTTPError:
             continue
         for item in r.json().get("value", []):
-            if item.get("file") and item["name"].lower().startswith(stem.lower()):
+            name = item.get("name", "")
+            name_norm = sans_accents(name).lower()
+            is_csv = name_norm.endswith(".csv")
+            if item.get("file") and is_csv and name_norm.startswith(stem_norm):
                 lm = item.get("lastModifiedDateTime", "")
                 if best is None or lm > best[0]:
-                    best = (lm, d, item["id"])
+                    best = (lm, d, item["id"], name)
     if best is None:
         raise FileNotFoundError("Fichier « " + file_name + " » introuvable sur le site.")
-    print("Fichier trouve (modifie le " + best[0] + ")")
+    print("Fichier trouve : " + best[3] + " (modifie le " + best[0] + ")")
     return best[1], best[2]
 
 
@@ -149,11 +166,12 @@ def to_commandes(rows):
 
 def main():
     token = get_token()
-    hostname = os.environ.get("SP_HOSTNAME", "frenchbloom75.sharepoint.com")
-    site_path = os.environ.get("SP_SITE_PATH", "/sites/Exportlogistique")
-    file_name = os.environ.get("SP_FILE_NAME", "Monitoring Expeditions.csv")
-    drive_id = os.environ.get("SP_DRIVE_ID", "").strip() or None
+    hostname = env_default("SP_HOSTNAME", "frenchbloom75.sharepoint.com")
+    site_path = env_default("SP_SITE_PATH", "/sites/Exportlogistique")
+    file_name = env_default("SP_FILE_NAME", "Monitoring Expéditions.csv")
+    drive_id = env_default("SP_DRIVE_ID", "") or None
 
+    print("Site : " + hostname + site_path + " | Fichier : " + file_name)
     site_id = resolve_site_id(token, hostname, site_path)
     drive_id, item_id = find_file(token, site_id, drive_id, file_name)
     text = download_csv(token, drive_id, item_id)
