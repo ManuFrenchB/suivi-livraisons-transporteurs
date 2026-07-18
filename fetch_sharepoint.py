@@ -176,21 +176,18 @@ def detect_delim(text):
     return max(counts, key=counts.get)
 
 
-def dans_fenetre(row, auj, jours):
-    """Vrai si la commande n'est pas plus vieille que `jours` (date souhaitee).
-    Une commande SANS date est conservee."""
-    ref = parse_date(val(row, DATE_SOUH_P1)) or parse_date(val(row, DATE_SOUH))
-    if ref is None:
-        return True
-    return (auj - ref).days <= jours
-
-
 def to_commandes(rows, auj, fenetre):
+    """Ne scrape QUE les commandes non livrees, avec une date souhaitee presente
+    et dans la fenetre (pas plus vieille que `fenetre` jours). Sans date souhaitee
+    -> pas de scraping."""
     par_cmd = {}
     for r in rows:
         if val(r, DATE_REELLE):
             continue  # deja livree
-        if not dans_fenetre(r, auj, fenetre):
+        d_souh = parse_date(val(r, DATE_SOUH_P1)) or parse_date(val(r, DATE_SOUH))
+        if d_souh is None:
+            continue  # pas de date souhaitee -> pas de scraping
+        if (auj - d_souh).days > fenetre:
             continue  # trop vieille
         cmd = val(r, COMMANDE)
         if not cmd:

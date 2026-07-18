@@ -159,6 +159,8 @@ def statut_final(row, scrap, auj):
     d_souh = parse_date(val(row, DATE_SOUH))
     d_p1 = parse_date(val(row, DATE_SOUH_P1)) or d_souh
     d_reel = parse_date(val(row, DATE_REELLE))
+    if d_reel is None and scrap:
+        d_reel = parse_date(scrap.get("date_livraison_reelle", ""))  # date recuperee au scraping
     if d_reel is not None:
         ref = d_p1 or d_souh
         if ref and d_reel > ref:
@@ -236,7 +238,7 @@ def build_rows(auj, fenetre):
             "ville": val(m, VILLE),
             "d_souh": val(m, DATE_SOUH),
             "d_p1": val(m, DATE_SOUH_P1),
-            "d_reel": val(m, DATE_REELLE),
+            "d_reel": val(m, DATE_REELLE) or ((s or {}).get("date_livraison_reelle", "") if s else ""),
             "pipeline": val(m, PIPELINE),
             "lien_bonx": val(m, LIEN_BONX),
         })
