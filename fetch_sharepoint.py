@@ -6,19 +6,23 @@ fetch_sharepoint.py - Recupere le CSV Bonx depuis SharePoint (French Bloom)
 Telecharge le dernier « Monitoring Expeditions.csv » depuis SharePoint via
 Microsoft Graph, puis le convertit au format attendu par scraper_tracking.py.
 
-Ecrit DEUX fichiers :
+Ecrit :
   - monitoring_expeditions.csv : copie brute du fichier SharePoint
   - commandes.csv              : format scraper (numero_commande;transporteur;lien_tracking;date_prevue)
 
-Seules les commandes NON encore livrees (date_livraison_reelle vide) passent au scraper.
-Une commande peut arriver en 2 fois (lien puis MAJ EDI) : on garde la version avec URL.
+Ne transmet au scraper QUE les commandes :
+  - non encore livrees (date_livraison_reelle vide),
+  - et dont la date de livraison souhaitee n'est pas plus vieille que FENETRE_JOURS
+    (defaut 15). Les commandes SANS date sont conservees (envois actifs possibles).
+Dedoublonnage : une commande peut arriver en 2 fois (lien puis MAJ EDI), on garde la version avec URL.
 
 Variables d'environnement :
-  MS_TENANT_ID / MS_CLIENT_ID / MS_CLIENT_SECRET   (obligatoires ; alias AZURE_* acceptes)
+  MS_TENANT_ID / MS_CLIENT_ID / MS_CLIENT_SECRET   (alias AZURE_* acceptes)
   SP_HOSTNAME   defaut: frenchbloom75.sharepoint.com
   SP_SITE_PATH  defaut: /sites/Exportlogistique
   SP_FILE_NAME  defaut: Monitoring Expeditions.csv
   SP_DRIVE_ID   optionnel
+  FENETRE_JOURS defaut: 15
 
 Dependances : pip install msal requests
 """
@@ -28,19 +32,27 @@ import sys
 import csv
 import io
 import unicodedata
+from datetime import datetime, date
 import requests
 import msal
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 
-# Alias de colonnes tolerees (le vrai fichier utilise numero_commande / pays)
 COMMANDE = ("numero_commande", "fnumero_commande")
-LIEN_BONX = ("lien_bonx",)
 TRANSPORTEUR = ("transporteur",)
 NUMERO_SUIVI = ("numero_suivi",)
 DATE_SOUH = ("date_livraison_souhaitee",)
 DATE_SOUH_P1 = ("date_souhaitee_plus_1j_ouvre",)
 DATE_REELLE = ("date_livraison_reelle",)
+
+DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%y", "%Y/%m/%d")
+MOIS_FR = {"janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6,
+           "juillet": 7, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12}
+
+
+def sans_accents(s):
+    return "".join(c for c in unicodedata.normalize("NFD", s or "")
+                   if unicodedata.category(c) != "Mn")
 
 
 def val(row, keys):
@@ -49,6 +61,36 @@ def val(row, keys):
         if v is not None and str(v).strip() != "":
             return str(v).strip()
     return ""
+
+
+def parse_date(v):
+    """Gere les formats numeriques ET le francais en toutes lettres (ex: 'fevrier 6, 2026')."""
+    s = str(v or "").strip()
+    if not s or s.lower() in ("none", "nan", "null"):
+        return None
+    tok = s.split(" ")[0].split("T")[0]
+    for f in DATE_FORMATS:
+        try:
+            return datetime.strptime(tok, f).date()
+        except ValueError:
+            continue
+    sl = sans_accents(s).lower().replace(",", " ")
+    mois = jour = annee = None
+    for p in sl.split():
+        if p in MOIS_FR:
+            mois = MOIS_FR[p]
+        elif p.isdigit():
+            n = int(p)
+            if n > 31:
+                annee = n
+            elif jour is None:
+                jour = n
+    if mois and jour and annee:
+        try:
+            return date(annee, mois, jour)
+        except ValueError:
+            return None
+    return None
 
 
 def env_any(*names, required=False, default=None):
@@ -64,11 +106,6 @@ def env_any(*names, required=False, default=None):
 def env_default(name, default):
     v = os.environ.get(name)
     return v if (v and v.strip()) else default
-
-
-def sans_accents(s):
-    return "".join(c for c in unicodedata.normalize("NFD", s or "")
-                   if unicodedata.category(c) != "Mn")
 
 
 def get_token():
@@ -139,11 +176,22 @@ def detect_delim(text):
     return max(counts, key=counts.get)
 
 
-def to_commandes(rows):
+def dans_fenetre(row, auj, jours):
+    """Vrai si la commande n'est pas plus vieille que `jours` (date souhaitee).
+    Une commande SANS date est conservee."""
+    ref = parse_date(val(row, DATE_SOUH_P1)) or parse_date(val(row, DATE_SOUH))
+    if ref is None:
+        return True
+    return (auj - ref).days <= jours
+
+
+def to_commandes(rows, auj, fenetre):
     par_cmd = {}
     for r in rows:
         if val(r, DATE_REELLE):
             continue  # deja livree
+        if not dans_fenetre(r, auj, fenetre):
+            continue  # trop vieille
         cmd = val(r, COMMANDE)
         if not cmd:
             continue
@@ -167,8 +215,10 @@ def main():
     site_path = env_default("SP_SITE_PATH", "/sites/Exportlogistique")
     file_name = env_default("SP_FILE_NAME", "Monitoring Expéditions.csv")
     drive_id = env_default("SP_DRIVE_ID", "") or None
+    fenetre = int(env_default("FENETRE_JOURS", "15"))
+    auj = date.today()
 
-    print("Site : " + hostname + site_path + " | Fichier : " + file_name)
+    print("Site : " + hostname + site_path + " | Fichier : " + file_name + " | fenetre : " + str(fenetre) + "j")
     site_id = resolve_site_id(token, hostname, site_path)
     drive_id, item_id = find_file(token, site_id, drive_id, file_name)
     text = download_csv(token, drive_id, item_id)
@@ -179,16 +229,17 @@ def main():
     delim = detect_delim(text)
     rows = [{(k or "").strip(): v for k, v in r.items()}
             for r in csv.DictReader(io.StringIO(text), delimiter=delim)]
-    print(str(len(rows)) + " lignes lues depuis SharePoint (separateur '" + repr(delim) + "')")
+    print(str(len(rows)) + " lignes lues depuis SharePoint (separateur " + repr(delim) + ")")
 
-    commandes = to_commandes(rows)
+    commandes = to_commandes(rows, auj, fenetre)
     with open("commandes.csv", "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["numero_commande", "transporteur", "lien_tracking", "date_prevue"], delimiter=";")
         w.writeheader()
         w.writerows(commandes)
 
     sans_lien = sum(1 for c in commandes if not c["lien_tracking"])
-    print(str(len(commandes)) + " commandes a suivre (" + str(sans_lien) + " sans lien exploitable)")
+    print(str(len(commandes)) + " commandes a scraper (fenetre " + str(fenetre) + "j, "
+          + str(sans_lien) + " sans lien exploitable)")
 
 
 if __name__ == "__main__":

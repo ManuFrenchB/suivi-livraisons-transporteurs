@@ -6,9 +6,13 @@ rapport_mail.py - Genere le rapport de suivi et l'envoie par mail (French Bloom)
 Fusionne monitoring_expeditions.csv (SharePoint) + suivi_resultats.csv (scraper),
 produit un Excel priorise (retards en tete) et l'envoie par mail via Graph.
 
+Le rapport ne garde que les commandes dont la date de livraison souhaitee n'est
+pas plus vieille que FENETRE_JOURS (defaut 15). Les commandes SANS date sont conservees.
+
 Variables d'environnement :
   MS_TENANT_ID / MS_CLIENT_ID / MS_CLIENT_SECRET   (alias AZURE_* acceptes)
   SEND_MAIL "1" pour envoyer ; RAPPORT_FROM ; RAPPORT_TO ; RAPPORT_CC (option)
+  FENETRE_JOURS defaut: 15
 
 Dependances : pip install msal requests openpyxl
 """
@@ -17,6 +21,7 @@ import os
 import csv
 import sys
 import base64
+import unicodedata
 from datetime import datetime, date
 
 from openpyxl import Workbook
@@ -25,7 +30,6 @@ from openpyxl.utils import get_column_letter
 
 GRAPH = "https://graph.microsoft.com/v1.0"
 
-# Alias de colonnes tolerees (le vrai fichier utilise numero_commande / pays)
 COMMANDE = ("numero_commande", "fnumero_commande")
 LIEN_BONX = ("lien_bonx",)
 TRANSPORTEUR = ("transporteur",)
@@ -38,6 +42,8 @@ VILLE = ("ville",)
 PIPELINE = ("pipeline",)
 
 DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%y", "%Y/%m/%d")
+MOIS_FR = {"janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6,
+           "juillet": 7, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12}
 
 ST_INCIDENT = "Incident"
 ST_RETARD = "En retard"
@@ -50,6 +56,11 @@ ST_INDET = "Indéterminé"
 PRIORITE = {ST_INCIDENT: 0, ST_RETARD: 1, ST_AVERIF: 2, ST_ENCOURS: 3,
             ST_LIVRE_RET: 4, ST_LIVRE: 5, ST_INDET: 6}
 ORDRE = [ST_INCIDENT, ST_RETARD, ST_AVERIF, ST_ENCOURS, ST_LIVRE_RET, ST_LIVRE, ST_INDET]
+
+
+def sans_accents(s):
+    return "".join(c for c in unicodedata.normalize("NFD", s or "")
+                   if unicodedata.category(c) != "Mn")
 
 
 def val(row, keys):
@@ -70,18 +81,46 @@ def env_any(*names, required=False, default=None):
     return default
 
 
+def env_default(name, default):
+    v = os.environ.get(name)
+    return v if (v and v.strip()) else default
+
+
 def parse_date(v):
-    if not v:
-        return None
-    s = str(v).strip().split(" ")[0].split("T")[0]
+    """Gere les formats numeriques ET le francais en toutes lettres (ex: 'fevrier 6, 2026')."""
+    s = str(v or "").strip()
     if not s or s.lower() in ("none", "nan", "null"):
         return None
+    tok = s.split(" ")[0].split("T")[0]
     for f in DATE_FORMATS:
         try:
-            return datetime.strptime(s, f).date()
+            return datetime.strptime(tok, f).date()
         except ValueError:
             continue
+    sl = sans_accents(s).lower().replace(",", " ")
+    mois = jour = annee = None
+    for p in sl.split():
+        if p in MOIS_FR:
+            mois = MOIS_FR[p]
+        elif p.isdigit():
+            n = int(p)
+            if n > 31:
+                annee = n
+            elif jour is None:
+                jour = n
+    if mois and jour and annee:
+        try:
+            return date(annee, mois, jour)
+        except ValueError:
+            return None
     return None
+
+
+def dans_fenetre(row, auj, jours):
+    ref = parse_date(val(row, DATE_SOUH_P1)) or parse_date(val(row, DATE_SOUH))
+    if ref is None:
+        return True
+    return (auj - ref).days <= jours
 
 
 def read_csv(path):
@@ -169,10 +208,12 @@ def _rang(m):
     return (livree, url)
 
 
-def build_rows(auj):
+def build_rows(auj, fenetre):
     master = read_csv("monitoring_expeditions.csv")
     scrap_list = read_csv("suivi_resultats.csv")
     scrap = {(r.get("numero_commande") or "").strip(): r for r in scrap_list}
+
+    master = [m for m in master if dans_fenetre(m, auj, fenetre)]
 
     dedup = {}
     for m in master:
@@ -264,7 +305,7 @@ def generer_xlsx(rows, auj, out):
     return cpt
 
 
-def corps_html(rows, cpt, auj):
+def corps_html(rows, cpt, auj, fenetre):
     urgents = [r for r in rows if r["statut"] in (ST_RETARD, ST_INCIDENT)]
     lignes = ""
     for r in urgents[:40]:
@@ -281,6 +322,7 @@ def corps_html(rows, cpt, auj):
         bloc = "<p style='color:#38761d'><b>Aucune livraison en retard ni en incident.</b></p>"
     return ("<div style='font-family:Arial;font-size:14px;color:#222'>"
             "<h2 style='color:#1F3864'>Suivi des livraisons - " + auj.strftime("%d/%m/%Y") + "</h2>"
+            "<p style='color:#666'>Commandes des " + str(fenetre) + " derniers jours (+ commandes sans date).</p>"
             "<p>" + synth + "</p>" + bloc +
             "<p style='color:#666;font-size:12px'>Détail complet en piece jointe (Excel). "
             "Rapport automatique French Bloom.</p></div>")
@@ -335,19 +377,20 @@ def envoyer_mail(sujet, html, piece_jointe):
 
 def main():
     auj = date.today()
-    rows = build_rows(auj)
+    fenetre = int(env_default("FENETRE_JOURS", "15"))
+    rows = build_rows(auj, fenetre)
     if not rows:
-        print("Aucune donnee (monitoring_expeditions.csv manquant ou vide).")
+        print("Aucune commande dans la fenetre de " + str(fenetre) + " jours.")
         return
     out = "suivi_livraisons_" + auj.isoformat() + ".xlsx"
     cpt = generer_xlsx(rows, auj, out)
-    print(str(len(rows)) + " commandes -> " + out)
+    print(str(len(rows)) + " commandes (fenetre " + str(fenetre) + "j) -> " + out)
     for s in ORDRE:
         if cpt.get(s):
             print("  " + s + ": " + str(cpt[s]))
     nb_urgent = cpt.get(ST_RETARD, 0) + cpt.get(ST_INCIDENT, 0)
     sujet = "[Suivi livraisons] " + auj.strftime("%d/%m/%Y") + " - " + str(nb_urgent) + " a traiter"
-    html = corps_html(rows, cpt, auj)
+    html = corps_html(rows, cpt, auj, fenetre)
     if os.environ.get("SEND_MAIL") == "1":
         envoyer_mail(sujet, html, out)
     else:
