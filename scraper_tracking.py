@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Scraper de statuts de livraison transporteurs (French Bloom) - v2
+Scraper de statuts de livraison transporteurs (French Bloom) - v3
 =================================================================
 Lit commandes.csv (numero_commande;transporteur;lien_tracking;date_prevue),
 ouvre chaque lien dans un navigateur headless (Playwright), gere les bannieres
-cookies, lit le texte rendu (y compris iframes), extrait :
-  - le statut brut + le statut normalise (En cours / En retard / Incident / Livré / À vérifier)
+cookies, lit le texte rendu (iframes compris), extrait :
+  - le statut brut + normalise (En cours / En retard / Incident / Livré / À vérifier)
   - la DATE DE LIVRAISON REELLE quand le suivi indique "livré"
+    (formats numeriques, francais en toutes lettres, et francais SANS annee
+     ex UPS "mercredi, juin 03" -> annee deduite)
 et ecrit suivi_resultats.csv.
+
+Detecte les pages avec controle anti-robot (CAPTCHA) et les marque sans tenter
+de les contourner.
 
 INSTALLATION :
     pip install playwright pandas python-dateutil
@@ -17,7 +22,7 @@ INSTALLATION :
 UTILISATION :
     python scraper_tracking.py                       # commandes.csv -> suivi_resultats.csv
     python scraper_tracking.py mes_commandes.csv out.csv
-    python scraper_tracking.py --headful             # voir le navigateur (debug)
+    python scraper_tracking.py --headful
 """
 
 import sys
@@ -34,13 +39,24 @@ from playwright.sync_api import sync_playwright
 # ==================================================================
 INCIDENT_KEYWORDS = [
     "incident", "anomalie", "avarie", "refus", "retour", "litige",
-    "perdu", "endommag", "souffrance", "non distribu", "echec", "échec",
-    "mise en instance", "en instance", "reexpedition", "réexpédition",
+    "perdu", "endommag", "souffrance", "non distribu", "echec",
+    "mise en instance", "en instance", "reexpedition",
 ]
 DELIVERED_KEYWORDS = [
-    "livré", "livree", "livrée", "delivered", "remis", "distribué", "distribue",
-    "delivery completed", "proof of delivery", "pod",
+    "livre", "delivered", "remis", "distribue",
+    "delivery completed", "proof of delivery",
 ]
+CAPTCHA_MARKERS = [
+    "verification robot", "je ne suis pas un robot", "recaptcha", "captcha",
+    "verify you are human", "are you a robot", "hcaptcha", "cf-challenge",
+    "verification que vous n", "controle de securite",
+]
+
+MOIS_FR = {"janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6,
+           "juillet": 7, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12}
+MOIS_RE = "(?:janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|d[ée]cembre)"
+
+DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%y", "%Y/%m/%d", "%d.%m.%Y")
 
 
 def sans_accents(s):
@@ -52,9 +68,9 @@ def classifier(statut_brut, date_prevue):
     t = sans_accents(statut_brut or "").lower().strip()
     if not t:
         return "À vérifier"
-    if any(sans_accents(k) in t for k in INCIDENT_KEYWORDS):
+    if any(k in t for k in INCIDENT_KEYWORDS):
         return "Incident"
-    if any(sans_accents(k) in t for k in DELIVERED_KEYWORDS):
+    if any(k in t for k in DELIVERED_KEYWORDS):
         return "Livré"
     if date_prevue and date_prevue < date.today():
         return "En retard"
@@ -67,12 +83,8 @@ def jours_retard(statut, date_prevue):
     return 0
 
 
-DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y", "%d/%m/%y", "%Y/%m/%d", "%d.%m.%Y")
-MOIS_FR = {"janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6,
-           "juillet": 7, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12}
-
-
-def parse_date(s):
+def parse_date(s, auj=None):
+    """Numerique, francais complet, ou francais SANS annee (annee deduite)."""
     s = (s or "").strip()
     if not s:
         return None
@@ -92,12 +104,24 @@ def parse_date(s):
                 annee = n
             elif jour is None:
                 jour = n
-    if mois and jour and annee:
+    if not (mois and jour):
+        return None
+    if annee is None:
+        auj = auj or date.today()
         try:
-            return date(annee, mois, jour)
+            d = date(auj.year, mois, jour)
         except ValueError:
             return None
-    return None
+        if d > auj:  # date "future" sans annee -> annee precedente
+            try:
+                d = date(auj.year - 1, mois, jour)
+            except ValueError:
+                return None
+        return d
+    try:
+        return date(annee, mois, jour)
+    except ValueError:
+        return None
 
 
 # ==================================================================
@@ -120,11 +144,13 @@ STATUS_PATTERNS = [
     r"(mise en instance|en instance)",
 ]
 
-# Dates au format numerique ou francais en toutes lettres
+# Dates : numerique | JJ mois AAAA | mois JJ, AAAA | JJ mois | mois JJ (sans annee)
 DATE_REGEX = re.compile(
     r"(\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4})"
-    r"|(\d{1,2}\s+(?:janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|d[ée]cembre)\s+\d{4})"
-    r"|((?:janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|d[ée]cembre)\s+\d{1,2},?\s+\d{4})",
+    r"|(\d{1,2}\s+" + MOIS_RE + r"\s+\d{4})"
+    r"|(" + MOIS_RE + r"\s+\d{1,2},?\s+\d{4})"
+    r"|(\d{1,2}\s+" + MOIS_RE + r")"
+    r"|(" + MOIS_RE + r"\s+\d{1,2})",
     re.IGNORECASE)
 
 CONSENT_SELECTORS = [
@@ -135,7 +161,6 @@ CONSENT_SELECTORS = [
     "button:has-text('Accepter')",
     "button:has-text('J\\'accepte')",
     "button:has-text('Accept all')",
-    "button:has-text('Accept All')",
     "button:has-text('I agree')",
 ]
 
@@ -153,7 +178,6 @@ def dismiss_consent(page):
 
 
 def texte_complet(page):
-    """Texte du document principal + de toutes les iframes."""
     parts = []
     try:
         parts.append(page.inner_text("body"))
@@ -167,6 +191,11 @@ def texte_complet(page):
     return " ".join(" ".join(p.split()) for p in parts if p)
 
 
+def est_captcha(text):
+    low = sans_accents(text).lower()
+    return any(m in low for m in CAPTCHA_MARKERS)
+
+
 def extraire_statut(text):
     for pat in STATUS_PATTERNS:
         m = re.search(pat, text, flags=re.IGNORECASE)
@@ -176,15 +205,10 @@ def extraire_statut(text):
 
 
 def extraire_date_livraison(text, statut_norm):
-    """Cherche une date proche d'un mot-cle de livraison (uniquement si Livré)."""
     if statut_norm != "Livré":
         return ""
     low = sans_accents(text).lower()
-    positions = []
-    for kw in ["livr", "delivered", "remis", "distribu", "proof of delivery"]:
-        i = low.find(kw)
-        if i >= 0:
-            positions.append(i)
+    positions = [low.find(kw) for kw in ["livr", "delivered", "remis", "distribu"] if low.find(kw) >= 0]
     dates = [(m.start(), m.group(0)) for m in DATE_REGEX.finditer(text)]
     if not dates:
         return ""
@@ -193,9 +217,7 @@ def extraire_date_livraison(text, statut_norm):
         best = min(dates, key=lambda d: abs(d[0] - kwpos))
         d = parse_date(best[1])
         return d.isoformat() if d else ""
-    # sinon, date la plus recente trouvee
-    parsed = [parse_date(x[1]) for x in dates]
-    parsed = [p for p in parsed if p]
+    parsed = [p for p in (parse_date(x[1]) for x in dates) if p]
     return max(parsed).isoformat() if parsed else ""
 
 
@@ -211,6 +233,8 @@ def scraper_une_commande(page, lien, tentative=0):
             pass
         page.wait_for_timeout(3500)
         text = texte_complet(page)
+        if est_captcha(text):
+            return "[CAPTCHA]", ""
         brut = extraire_statut(text)
         statut_norm = classifier(brut, None)
         date_liv = extraire_date_livraison(text, statut_norm)
@@ -255,12 +279,13 @@ def main():
 
             print("[" + str(i) + "/" + str(len(commandes)) + "] " + num + " (" + transp + ") ...", end=" ", flush=True)
             brut, date_liv = scraper_une_commande(page, lien)
-            statut = classifier(brut, d_prev)
-            retard = jours_retard(statut, d_prev)
-            # coherence : si on a une date de livraison, c'est Livré
+            if brut == "[CAPTCHA]":
+                statut, retard = "À vérifier", 0
+            else:
+                statut = classifier(brut, d_prev)
+                retard = jours_retard(statut, d_prev)
             if date_liv and statut != "Livré":
-                statut = "Livré"
-                retard = 0
+                statut, retard = "Livré", 0
             print((brut or "—") + " -> " + statut + (" (" + date_liv + ")" if date_liv else ""))
 
             resultats.append({
