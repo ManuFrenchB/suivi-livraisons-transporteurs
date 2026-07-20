@@ -1,5 +1,4 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-SA26162;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=;2026-07-03;;À vérifier;0;;2026-07-18 07:51
-FR26689;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=;2026-07-06;;À vérifier;0;;2026-07-18 07:51
-EXSA26121;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800400307374&requester=UPSHome/trackdetails;2026-07-16;[ERREUR: Error];En retard;2;;2026-07-18 07:51
-FR26771;;;2026-07-21;;À vérifier;0;;2026-07-18 07:51
+FR26689;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=;2026-07-06;;À vérifier;0;;2026-07-20 06:20
+EXSA26121;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800400307374&requester=UPSHome/trackdetails;2026-07-16;[ERREUR: Error];En retard;4;;2026-07-20 06:20
+FR26771;;;2026-07-21;;À vérifier;0;;2026-07-20 06:20
