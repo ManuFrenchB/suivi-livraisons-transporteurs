@@ -1,0 +1,78 @@
+name: Suivi livraisons
+
+# Recup SharePoint -> scraping (via proxy residentiel) -> rapport + mail.
+# Crons en UTC. On garde UN seul creneau (pas de garde-fou) : le job tourne toujours.
+# 06:20 et 12:20 UTC = 08:20 et 14:20 Paris en ete (CEST), 07:20 et 13:20 en hiver (CET).
+# (Le leger decalage saisonnier d'1h est sans importance pour un rapport de livraison.)
+on:
+  schedule:
+    - cron: "20 6 * * 1-5"
+    - cron: "20 12 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  suivi:
+    runs-on: ubuntu-latest
+    env:
+      # --- App Azure (secrets, memes que stock-pipeline-french-bloom) ---
+      MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+      MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+      MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+      # --- SharePoint (defauts codes, surchargeables via Variables) ---
+      SP_HOSTNAME: ${{ vars.SP_HOSTNAME }}
+      SP_SITE_PATH: ${{ vars.SP_SITE_PATH }}
+      SP_FILE_NAME: ${{ vars.SP_FILE_NAME }}
+      SP_DRIVE_ID: ${{ vars.SP_DRIVE_ID }}
+      FENETRE_JOURS: ${{ vars.FENETRE_JOURS }}
+      # --- Proxy residentiel (secrets) : debloque le scraping depuis GitHub ---
+      PROXY_SERVER: ${{ secrets.PROXY_SERVER }}
+      PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
+      PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
+      # --- Email ---
+      SEND_MAIL: "1"
+      RAPPORT_FROM: ${{ secrets.RAPPORT_FROM }}
+      RAPPORT_TO: ${{ secrets.RAPPORT_TO }}
+      RAPPORT_CC: ${{ secrets.RAPPORT_CC }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dependances
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Recuperer le CSV depuis SharePoint
+        run: python fetch_sharepoint.py
+
+      - name: Scraper les statuts transporteurs (via proxy)
+        run: python scraper_tracking.py commandes.csv suivi_resultats.csv
+
+      - name: Generer le rapport et envoyer le mail
+        run: python rapport_mail.py
+
+      - name: Archiver le rapport (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: suivi-livraisons
+          path: |
+            suivi_livraisons_*.xlsx
+            suivi_resultats.csv
+          if-no-files-found: ignore
+
+      - name: Historiser suivi_resultats.csv
+        if: success()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add suivi_resultats.csv || true
+          git commit -m "MAJ statuts livraisons ($(date +%F))" || echo "rien a committer"
+          git push || true
