@@ -27,6 +27,7 @@ UTILISATION :
     python scraper_tracking.py --headful
 """
 
+import os
 import sys
 import csv
 import re
@@ -35,6 +36,19 @@ import unicodedata
 from datetime import date, datetime
 
 from playwright.sync_api import sync_playwright
+
+
+def proxy_config():
+    """Proxy residentiel via variables d'env (GitHub Secrets). None si absent."""
+    server = os.environ.get("PROXY_SERVER", "").strip()
+    if not server:
+        return None
+    cfg = {"server": server}
+    if os.environ.get("PROXY_USERNAME"):
+        cfg["username"] = os.environ["PROXY_USERNAME"]
+    if os.environ.get("PROXY_PASSWORD"):
+        cfg["password"] = os.environ["PROXY_PASSWORD"]
+    return cfg
 
 # ==================================================================
 # 1) OUTILS DATES
@@ -113,6 +127,11 @@ INCIDENT_PATS = [
 DELIVERED_PATS = [
     r"\blivree?s?\s+le\b",
     r"\blivree?s?\s+\d{1,2}\s*[/.\-]",
+    r"\blivree?s?\s+conforme",            # VCV/Teliway : "Livré conforme ( 20/07/2026 )"
+    r"\blivree?s?\s+cfm\s+conforme",       # SPD/veolog : "LIV Livré CFM Conforme 21/07/2026"
+    r"\blivree?s?\s*\(\s*\d{1,2}[/.]",     # "Livré ( 20/07/2026 )"
+    r"\blivraison\s+effectuee",
+    r"\blivree?s?\s+au\s+destinataire",
     r"\best\s+livree?s?\b",
     r"expedition[^.]{0,40}livree",
     r"\bdelivered\b",
@@ -121,9 +140,10 @@ DELIVERED_PATS = [
     r"\blivree?s?\s+a\b\s+[a-z0-9]",
 ]
 INTRANSIT_PATS = [
-    r"en cours de livraison", r"out for delivery", r"en livraison\b",
+    r"en cours de livraison", r"out for delivery", r"mise en livraison", r"en livraison\b",
     r"en cours d.acheminement", r"en transit", r"in transit",
-    r"pris en charge", r"picked up", r"\bexpedie", r"en preparation", r"colis remis",
+    r"pris en charge", r"picked up", r"\bexpedie", r"en preparation",
+    r"colis remis", r"\barrivage\b",
 ]
 CAPTCHA_MARKERS = [
     "verification robot", "je ne suis pas un robot", "recaptcha", "captcha",
@@ -226,23 +246,47 @@ def texte_complet(page):
     return " ".join(" ".join(p.split()) for p in parts if p)
 
 
+# Mots indiquant que le contenu de suivi est charge (sinon on attend encore)
+CONTENU_KEYWORDS = ["livr", "transit", "achemin", "expedi", "conforme", "delivered",
+                    "arrivage", "instance", "enleve", "pris en charge", "preparation",
+                    "out for delivery", "colis remis"]
+
+
+def contenu_suffisant(text):
+    low = sans_accents(text).lower()
+    return len(low) > 400 or any(k in low for k in CONTENU_KEYWORDS)
+
+
 def charger_page(page, lien, tentative=0):
     """Retourne le texte de la page, ou un marqueur [ERREUR]/[CAPTCHA]."""
     try:
-        page.goto(lien, wait_until="domcontentloaded", timeout=45000)
-        dismiss_consent(page)
+        # Meme si l'evenement de chargement expire (proxy lent, SPD...), la page
+        # a souvent deja rendu du contenu : on n'echoue pas sur le goto.
         try:
-            page.wait_for_load_state("networkidle", timeout=8000)
+            page.goto(lien, wait_until="domcontentloaded", timeout=60000)
         except Exception:
             pass
-        page.wait_for_timeout(3500)
-        text = texte_complet(page)
-        if est_captcha(text):
-            return "[CAPTCHA]"
-        return text
+        dismiss_consent(page)
+        try:
+            page.wait_for_load_state("networkidle", timeout=12000)
+        except Exception:
+            pass
+        # Polling : on attend que le contenu de suivi apparaisse (proxy lent)
+        text = ""
+        for _ in range(6):
+            page.wait_for_timeout(2500)
+            dismiss_consent(page)
+            text = texte_complet(page)
+            if est_captcha(text):
+                return "[CAPTCHA]"
+            if contenu_suffisant(text):
+                return text
+        if text.strip():
+            return text  # on renvoie ce qu'on a, meme partiel
+        raise RuntimeError("page vide")
     except Exception as e:
         if tentative < 1:
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(3000)
             return charger_page(page, lien, tentative + 1)
         return "[ERREUR: " + type(e).__name__ + "]"
 
@@ -269,7 +313,10 @@ def main():
     resultats = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headful)
-        context = browser.new_context(locale="fr-FR", user_agent=UA)
+        prx = proxy_config()
+        if prx:
+            print("Proxy residentiel actif : " + prx["server"])
+        context = browser.new_context(locale="fr-FR", user_agent=UA, proxy=prx)
         page = context.new_page()
 
         for i, cmd in enumerate(commandes, 1):
