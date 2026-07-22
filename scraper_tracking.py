@@ -273,7 +273,7 @@ def charger_page(page, lien, tentative=0):
             pass
         # Polling : on attend que le contenu de suivi apparaisse (proxy lent)
         text = ""
-        for _ in range(6):
+        for _ in range(8):
             page.wait_for_timeout(2500)
             dismiss_consent(page)
             text = texte_complet(page)
@@ -285,7 +285,7 @@ def charger_page(page, lien, tentative=0):
             return text  # on renvoie ce qu'on a, meme partiel
         raise RuntimeError("page vide")
     except Exception as e:
-        if tentative < 1:
+        if tentative < 2:
             page.wait_for_timeout(3000)
             return charger_page(page, lien, tentative + 1)
         return "[ERREUR: " + type(e).__name__ + "]"
