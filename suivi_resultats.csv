@@ -1,11 +1,11 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-FR26766;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=LPaWIoH9cQVTlqJYC;2026-07-20;en livraison;En cours;0;;2026-07-21 16:22
-FR26714;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=TDal7CEo4MKblkSwO;2026-07-21;Livré;Livré;0;2026-07-20;2026-07-21 16:22
-FR26770;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=8e6ghXo1HmRMEWBEI;2026-07-21;;À vérifier;0;;2026-07-21 16:23
-FR26767;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26767;2026-07-22;[ERREUR: RuntimeError];À vérifier;0;;2026-07-21 16:28
-SA26178;HEP;https://myportal.heppner-group.com/tracking/U0EyNjE3OCYzMzExMCZGUg%3D%3D;2026-07-22;mise en livraison;En cours;0;;2026-07-21 16:28
-FR26768;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26768;2026-07-22;[ERREUR: RuntimeError];À vérifier;0;;2026-07-21 16:33
-FR26772;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=lqr5hVXGoXzf3DVkn;2026-07-23;;À vérifier;0;;2026-07-21 16:33
-FR26774;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=EQtnIsvCVb3zS2141;2026-07-23;arrivage;En cours;0;;2026-07-21 16:33
-FR26773;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=DWJnqYLPn1hdMcuFe;2026-07-23;;À vérifier;0;;2026-07-21 16:33
-FR26777;;;2026-07-24;;À vérifier;0;;2026-07-21 16:33
+FR26766;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=LPaWIoH9cQVTlqJYC;2026-07-20;en cours de livraison;En cours;0;;2026-07-22 06:23
+FR26714;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=TDal7CEo4MKblkSwO;2026-07-21;Livré;Livré;0;2026-07-20;2026-07-22 06:23
+FR26770;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=8e6ghXo1HmRMEWBEI;2026-07-21;;En retard;1;;2026-07-22 06:23
+FR26767;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26767;2026-07-22;[ERREUR: RuntimeError];À vérifier;0;;2026-07-22 06:31
+SA26178;HEP;https://myportal.heppner-group.com/tracking/U0EyNjE3OCYzMzExMCZGUg%3D%3D;2026-07-22;mise en livraison;En cours;0;;2026-07-22 06:31
+FR26768;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26768;2026-07-22;[ERREUR: RuntimeError];À vérifier;0;;2026-07-22 06:39
+FR26772;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=lqr5hVXGoXzf3DVkn;2026-07-23;;À vérifier;0;;2026-07-22 06:39
+FR26774;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=EQtnIsvCVb3zS2141;2026-07-23;arrivage;En cours;0;;2026-07-22 06:39
+FR26773;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=DWJnqYLPn1hdMcuFe;2026-07-23;;À vérifier;0;;2026-07-22 06:39
+FR26777;;;2026-07-24;;À vérifier;0;;2026-07-22 06:39
