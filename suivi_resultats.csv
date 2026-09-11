@@ -1,21 +1,20 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-FR26876;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4JzBw8sPve1tWDY5B;2026-08-28;en cours de livraison;En cours;0;;2026-09-10 12:16
-EXSA26139;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=&requester=UPSHome/trackdetails;2026-08-31;[ERREUR: RuntimeError];En retard;10;;2026-09-10 12:17
-EXSA26155;DHL;;2026-08-31;;En retard;10;;2026-09-10 12:17
-FR26893;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=X5ibHdkKzsdJ2gCO5;2026-09-01;Livré;Livré;0;2026-09-10;2026-09-10 12:17
-EX26171b;TCP;;2026-09-03;;En retard;7;;2026-09-10 12:17
-EX26172;WEI;;2026-09-03;;En retard;7;;2026-09-10 12:17
-SA26205;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=JyTfhEsQ5a3EtPY7y;2026-09-09;en livraison;En cours;0;;2026-09-10 12:17
-FR26916;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26916;2026-09-09;[ERREUR: RuntimeError];En retard;1;;2026-09-10 12:25
-FR26913;HEP;https://myportal.heppner-group.com/tracking/RlIyNjkxMyYzMzYyMCZGUg%3D%3D;2026-09-09;mise en livraison;En cours;0;;2026-09-10 12:25
-SAMA26115;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4zbFJKiNNWwFhLB6n;2026-09-10;en livraison;En cours;0;;2026-09-10 12:25
-FR26922;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=PaUSaOCHwW3P4d1VF;2026-09-10;en livraison;En cours;0;;2026-09-10 12:25
-FR26910b;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=HHZP4RU9S0h4Fe72N;2026-09-10;Livré;Livré;0;2026-09-09;2026-09-10 12:25
-FR26917;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=w4GAoAgSa9nsHEFXR;2026-09-10;Livré;Livré;0;2026-09-09;2026-09-10 12:25
-FR26929;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26929;2026-09-10;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 12:33
-FR26923;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=WG4tYEHRnF1r1Czs1;2026-09-10;en livraison;En cours;0;;2026-09-10 12:33
-FR26927;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26927;2026-09-10;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 12:41
-EXSA26160c;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806826512653&requester=UPSHome/trackdetails;2026-09-10;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 12:43
-FR26925;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26925;2026-09-10;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 12:50
-FR26926;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26926;2026-09-11;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 12:58
-FR26928;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26928;2026-09-14;[ERREUR: RuntimeError];À vérifier;0;;2026-09-10 13:06
+FR26876;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4JzBw8sPve1tWDY5B;2026-08-28;en cours de livraison;En cours;0;;2026-09-11 12:14
+EXSA26139;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=&requester=UPSHome/trackdetails;2026-08-31;[ERREUR: RuntimeError];En retard;11;;2026-09-11 12:15
+EXSA26155;DHL;;2026-08-31;;En retard;11;;2026-09-11 12:15
+EX26172;WEI;;2026-09-03;;En retard;8;;2026-09-11 12:15
+EX26171b;TCP;;2026-09-03;;En retard;8;;2026-09-11 12:15
+FR26916;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26916;2026-09-09;[ERREUR: RuntimeError];En retard;2;;2026-09-11 12:23
+SA26205;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=JyTfhEsQ5a3EtPY7y;2026-09-09;en livraison;En cours;0;;2026-09-11 12:23
+FR26925;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26925;2026-09-10;[ERREUR: RuntimeError];En retard;1;;2026-09-11 12:31
+EXSA26160c;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806826512653&requester=UPSHome/trackdetails;2026-09-10;[ERREUR: RuntimeError];En retard;1;;2026-09-11 12:33
+FR26922;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=PaUSaOCHwW3P4d1VF;2026-09-10;en livraison;En cours;0;;2026-09-11 12:33
+FR26917;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=w4GAoAgSa9nsHEFXR;2026-09-10;Livré;Livré;0;2026-09-09;2026-09-11 12:33
+FR26929;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26929;2026-09-10;[ERREUR: RuntimeError];En retard;1;;2026-09-11 12:41
+FR26923;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=WG4tYEHRnF1r1Czs1;2026-09-10;en livraison;En cours;0;;2026-09-11 12:41
+SAMA26115;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4zbFJKiNNWwFhLB6n;2026-09-10;en livraison;En cours;0;;2026-09-11 12:41
+FR26931;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26931;2026-09-14;[ERREUR: RuntimeError];À vérifier;0;;2026-09-11 12:49
+FR26928;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26928;2026-09-14;[ERREUR: RuntimeError];À vérifier;0;;2026-09-11 12:57
+FR26933;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=G36AAuNnbvxjlyaFw;2026-09-14;;À vérifier;0;;2026-09-11 12:57
+SA26207;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=cSX2w8EI2eJHCcrtx;2026-09-14;;À vérifier;0;;2026-09-11 12:57
+SA26208;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=EeMY0VXxl3FGsdvVe;2026-09-14;Livré;Livré;0;2026-09-11;2026-09-11 12:57
