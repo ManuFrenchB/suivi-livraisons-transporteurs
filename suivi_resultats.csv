@@ -1,27 +1,23 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-EXSA26139;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=&requester=UPSHome/trackdetails;2026-08-31;[ERREUR: RuntimeError];En retard;15;;2026-09-15 12:44
-EXSA26155;DHL;;2026-08-31;;En retard;15;;2026-09-15 12:44
-EX26172;WEI;;2026-09-03;;En retard;12;;2026-09-15 12:44
-EX26171b;TCP;;2026-09-03;;En retard;12;;2026-09-15 12:44
-SA26205;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=JyTfhEsQ5a3EtPY7y;2026-09-09;Livré;Livré;0;2026-09-14;2026-09-15 12:44
-FR26925;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26925;2026-09-10;[ERREUR: RuntimeError];En retard;5;;2026-09-15 12:52
-FR26922;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=PaUSaOCHwW3P4d1VF;2026-09-10;Livré;Livré;0;2026-09-14;2026-09-15 12:52
-SAMA26115;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4zbFJKiNNWwFhLB6n;2026-09-10;Livré;Livré;0;2026-09-11;2026-09-15 12:52
-FR26929;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26929;2026-09-10;[ERREUR: RuntimeError];En retard;5;;2026-09-15 13:00
-FR26923;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=WG4tYEHRnF1r1Czs1;2026-09-10;Livré;Livré;0;2026-09-14;2026-09-15 13:01
-EXSA26160c;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806826512653&requester=UPSHome/trackdetails;2026-09-10;Livré;Livré;0;2026-09-14;2026-09-15 13:01
-FR26931;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26931;2026-09-14;[ERREUR: RuntimeError];En retard;1;;2026-09-15 13:08
-FR26933;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=G36AAuNnbvxjlyaFw;2026-09-14;Livré;Livré;0;2026-09-14;2026-09-15 13:09
-SA26207;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=cSX2w8EI2eJHCcrtx;2026-09-14;Livré;Livré;0;2026-09-14;2026-09-15 13:09
-FR26928;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26928;2026-09-14;[ERREUR: RuntimeError];En retard;1;;2026-09-15 13:17
-SA26212;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26212;2026-09-14;[ERREUR: RuntimeError];En retard;1;;2026-09-15 13:25
-SA26201b;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIwMWImNTExMDAmRlI%3D;2026-09-15;;À vérifier;0;;2026-09-15 13:25
-FR26935;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26935;2026-09-15;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 13:33
-SA26211;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26211;2026-09-15;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 13:40
-FR26937;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26937;2026-09-15;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 13:48
-SA26210;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=TfNsC1MVG1cukHHG2;2026-09-15;Livré;Livré;0;2026-09-15;2026-09-15 13:48
-FR26936;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26936;2026-09-15;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 13:56
-SAMA26116;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26116;2026-09-16;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 14:04
-EXSA26165;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=amwx8w542bpBqfQvJ;2026-09-17;en livraison;En cours;0;;2026-09-15 14:04
-FR26938;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26938;2026-09-17;[ERREUR: RuntimeError];À vérifier;0;;2026-09-15 14:12
-FR26939;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=FqeSnT06rkj6YKxv0;2026-09-17;;À vérifier;0;;2026-09-15 14:12
+SA26205;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=JyTfhEsQ5a3EtPY7y;2026-09-09;Livré;Livré;0;2026-09-14;2026-09-16 12:38
+EXSA26160c;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806826512653&requester=UPSHome/trackdetails;2026-09-10;Livré;Livré;0;2026-09-14;2026-09-16 12:38
+EXSA26161;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800436652844&requester=UPSHome/trackdetails;2026-09-10;Livré;Livré;0;2026-09-14;2026-09-16 12:38
+FR26925;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26925;2026-09-10;[ERREUR: RuntimeError];En retard;6;;2026-09-16 12:46
+SAMA26115;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=4zbFJKiNNWwFhLB6n;2026-09-10;Livré;Livré;0;2026-09-11;2026-09-16 12:46
+FR26931;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26931;2026-09-14;[ERREUR: RuntimeError];En retard;2;;2026-09-16 12:54
+SA26207;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=cSX2w8EI2eJHCcrtx;2026-09-14;Livré;Livré;0;2026-09-14;2026-09-16 12:54
+SA26212;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26212;2026-09-14;[ERREUR: RuntimeError];En retard;2;;2026-09-16 13:02
+FR26936;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26936;2026-09-15;[ERREUR: RuntimeError];En retard;1;;2026-09-16 13:10
+SA26201b;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIwMWImNTExMDAmRlI%3D;2026-09-15;;En retard;1;;2026-09-16 13:10
+SA26210;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=TfNsC1MVG1cukHHG2;2026-09-15;Livré;Livré;0;2026-09-15;2026-09-16 13:10
+FR26937;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26937;2026-09-15;[ERREUR: RuntimeError];En retard;1;;2026-09-16 13:18
+SA26211;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26211;2026-09-15;[ERREUR: RuntimeError];En retard;1;;2026-09-16 13:26
+SAMA26116;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26116;2026-09-16;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 13:34
+EXSA26165;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=amwx8w542bpBqfQvJ;2026-09-17;Livré;Livré;0;2026-09-15;2026-09-16 13:34
+FR26940;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26940;2026-09-17;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 13:42
+FR26938;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26938;2026-09-17;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 13:50
+FR26939;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=FqeSnT06rkj6YKxv0;2026-09-17;;À vérifier;0;;2026-09-16 13:50
+FR26941;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26941;2026-09-17;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 13:58
+EXSA26158;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806832964798&requester=UPSHome/trackdetails;2026-09-17;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 13:59
+FR26934;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26934;2026-09-18;[ERREUR: RuntimeError];À vérifier;0;;2026-09-16 14:07
+SA26213;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=jY3gOPQUOOdzOXghd;2026-09-21;;À vérifier;0;;2026-09-16 14:07
