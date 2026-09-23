@@ -1,17 +1,27 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-EXSA26161;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800436652844&requester=UPSHome/trackdetails;2026-09-10;[ERREUR: RuntimeError];En retard;12;;2026-09-22 12:40
-EXSA26163;DHL;;2026-09-10;;En retard;12;;2026-09-22 12:40
-SA26212;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26212;2026-09-14;[ERREUR: RuntimeError];En retard;8;;2026-09-22 12:48
-SAMA26116;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26116;2026-09-16;[ERREUR: RuntimeError];En retard;6;;2026-09-22 12:56
-EX26156b;EVT;;2026-09-17;;En retard;5;;2026-09-22 12:56
-FR26952;HEP;https://myportal.heppner-group.com/tracking/RlIyNjk1MiYzMzEyNyZGUg%3D%3D;2026-09-18;mise en livraison;En cours;0;;2026-09-22 12:56
-FR26946;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=GuV5m3Jbz5rta3Scz;2026-09-21;en cours de livraison;En cours;0;;2026-09-22 12:56
-SA26220;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIyMCY0NDczMCZGUg%3D%3D;2026-09-22;mise en livraison;En cours;0;;2026-09-22 12:56
-EXSA26171;DHL;;2026-09-22;;À vérifier;0;;2026-09-22 12:56
-SA26221;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIyMSY1MTUwMCZGUg%3D%3D;2026-09-22;;À vérifier;0;;2026-09-22 12:56
-FR26951;HEP;https://myportal.heppner-group.com/tracking/RlIyNjk1MSY1MTE2MCZGUg%3D%3D;2026-09-22;mise en livraison;En cours;0;;2026-09-22 12:56
-FR26959;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=2sT6Wgp9gZTpaKRfk;2026-09-23;en livraison;En cours;0;;2026-09-22 12:56
-FR26956;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26956;2026-09-23;[ERREUR: RuntimeError];À vérifier;0;;2026-09-22 13:04
-FR26954;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=kRc5U5M2EY2q5v1O4;2026-09-23;Livré;Livré;0;2026-09-22;2026-09-22 13:05
-SAMA26117;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26117;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-22 13:12
-FR26958;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=ZeaYhJXWfoOx22GUO;2026-09-24;;À vérifier;0;;2026-09-22 13:13
+EXSA26163;DHL;;2026-09-10;;En retard;13;;2026-09-23 12:47
+EXSA26161;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800436652844&requester=UPSHome/trackdetails;2026-09-10;[ERREUR: RuntimeError];En retard;13;;2026-09-23 12:48
+SA26212;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SA26212;2026-09-14;[ERREUR: RuntimeError];En retard;9;;2026-09-23 12:56
+SAMA26116;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26116;2026-09-16;[ERREUR: RuntimeError];En retard;7;;2026-09-23 13:04
+EX26156b;EVT;;2026-09-17;;En retard;6;;2026-09-23 13:04
+FR26952;HEP;https://myportal.heppner-group.com/tracking/RlIyNjk1MiYzMzEyNyZGUg%3D%3D;2026-09-18;mise en livraison;En cours;0;;2026-09-23 13:04
+FR26946;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=GuV5m3Jbz5rta3Scz;2026-09-21;Livré;Livré;0;2026-09-22;2026-09-23 13:04
+EXSA26171;DHL;;2026-09-22;;En retard;1;;2026-09-23 13:04
+SA26220;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIyMCY0NDczMCZGUg%3D%3D;2026-09-22;mise en livraison;En cours;0;;2026-09-23 13:04
+SA26221;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIyMSY1MTUwMCZGUg%3D%3D;2026-09-22;;En retard;1;;2026-09-23 13:04
+FR26959;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=2sT6Wgp9gZTpaKRfk;2026-09-23;Livré;Livré;0;2026-09-23;2026-09-23 13:05
+FR26954;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=kRc5U5M2EY2q5v1O4;2026-09-23;Livré;Livré;0;2026-09-22;2026-09-23 13:05
+FR26963;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26963;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:13
+SAMA26117;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=SAMA26117;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:21
+FR26958;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=ZeaYhJXWfoOx22GUO;2026-09-24;;À vérifier;0;;2026-09-23 13:21
+FR26835b;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26835b;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:29
+EXSA26174;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800427147238&requester=UPSHome/trackdetails;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:30
+FR26962;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26962;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:38
+FR26966;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=NNVtI25HGxxrsfXuD;2026-09-24;;À vérifier;0;;2026-09-23 13:38
+FR26961;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=I00je5zEdiOnSLqkV;2026-09-24;en livraison;En cours;0;;2026-09-23 13:38
+FR26965;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26965;2026-09-24;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:46
+FR26964;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26964;2026-09-25;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 13:54
+SA26222;HEP;https://myportal.heppner-group.com/tracking/U0EyNjIyMiY1OTMwMCZGUg%3D%3D;2026-09-25;mise en livraison;En cours;0;;2026-09-23 13:54
+FR26943;SPD;https://www.speed-distribution.fr/veolog?code=3016612090015FBL&tn=FR26943;2026-09-25;[ERREUR: RuntimeError];À vérifier;0;;2026-09-23 14:02
+FR26960;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=f1LHJHzqDqL8WgWEZ;2026-09-28;;À vérifier;0;;2026-09-23 14:02
+FR26955;EVT;;2026-09-28;;À vérifier;0;;2026-09-23 14:02
