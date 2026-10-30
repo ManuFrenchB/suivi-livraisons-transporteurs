@@ -1,23 +1,23 @@
 ﻿numero_commande;transporteur;lien_tracking;date_prevue;statut_brut;statut_normalise;jours_retard;date_livraison_reelle;date_extraction
-SA26241b;HEP;https://myportal.heppner-group.com/tracking/U0EyNjI0MWImMzMzMDAmRlI%3D;2026-10-15;;En retard;14;;2026-10-29 13:46
-SA26245c;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=YFuhrYanm7j4gjGAG;2026-10-16;Livré;Livré;0;2026-10-16;2026-10-29 13:46
-FR26989;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=S03MTxDMUXzKDuqxH;2026-10-21;Livré;Livré;0;2026-10-22;2026-10-29 13:46
-EXSA26188;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=&requester=UPSHome/trackdetails;2026-10-21;Livré;Livré;0;2026-10-22;2026-10-29 13:46
-EXSA26189;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800431482215&requester=UPSHome/trackdetails;2026-10-23;Livré;Livré;0;2026-10-22;2026-10-29 13:46
-SA26252;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=I95ZjdqVX2e2O2XlF;2026-10-23;Livré;Livré;0;2026-10-29;2026-10-29 13:46
-FR261056;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=yRGhbphvuK8BvCZTm;2026-10-27;;En retard;2;;2026-10-29 13:46
-FR261042c;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=dH62hrwhuCypwzE8Q;2026-10-27;Livré;Livré;0;2026-10-27;2026-10-29 13:46
-FR261065;HEP;https://myportal.heppner-group.com/tracking/RlIyNjEwNjUmNTkzMTAmRlI%3D;2026-10-29;mise en livraison;En cours;0;;2026-10-29 13:47
-SA26255;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=WRgEaJAvIg3NFe53C;2026-10-29;en livraison;En cours;0;;2026-10-29 13:47
-FR261066;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=Y2lLt3VOkYGddg9dR;2026-10-30;;À vérifier;0;;2026-10-29 13:47
-FR261064;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=4mOiwDNRBjzDgugCX;2026-10-30;Livré;Livré;0;2026-10-29;2026-10-29 13:47
-SA26258;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=84uefZAk0l6hTSZfV;2026-11-02;;À vérifier;0;;2026-10-29 13:47
-SA26259;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=aiizgd08yqjO5PPIn;2026-11-02;;À vérifier;0;;2026-10-29 13:47
-EXSA26199;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806817895883&requester=UPSHome/trackdetails;2026-11-02;;À vérifier;0;;2026-10-29 13:47
-FR261033;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=Tuj2yuR4pN0hrkWLw;2026-11-02;;À vérifier;0;;2026-10-29 13:47
-SA26256;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=2uVfIfAdrUeWKXz34;2026-11-03;;À vérifier;0;;2026-10-29 13:47
-SAMA26125;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=m0BgoZUlZep9zw680;2026-11-03;;À vérifier;0;;2026-10-29 13:47
-SAMA26122b;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=dKnMoDIkPeZcxOIhc;2026-11-03;;À vérifier;0;;2026-10-29 13:47
-FR261067;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=T9fAukw7kEK0Pjix6;2026-11-03;en livraison;En cours;0;;2026-10-29 13:47
-SAMA26126;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=y0qIci9xxbl3uFUBl;2026-11-03;;À vérifier;0;;2026-10-29 13:47
-EXSA26200;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800405804103&requester=UPSHome/trackdetails;2026-11-06;;À vérifier;0;;2026-10-29 13:47
+SA26241b;HEP;https://myportal.heppner-group.com/tracking/U0EyNjI0MWImMzMzMDAmRlI%3D;2026-10-15;;En retard;15;;2026-10-30 13:02
+SA26245c;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=YFuhrYanm7j4gjGAG;2026-10-16;Livré;Livré;0;2026-10-16;2026-10-30 13:02
+FR26989;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=S03MTxDMUXzKDuqxH;2026-10-21;Livré;Livré;0;2026-10-22;2026-10-30 13:02
+EXSA26188;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=&requester=UPSHome/trackdetails;2026-10-21;Livré;Livré;0;2026-10-22;2026-10-30 13:02
+EXSA26189;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800431482215&requester=UPSHome/trackdetails;2026-10-23;Livré;Livré;0;2026-10-22;2026-10-30 13:02
+SA26252;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=I95ZjdqVX2e2O2XlF;2026-10-23;Livré;Livré;0;2026-10-29;2026-10-30 13:02
+FR261056;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=yRGhbphvuK8BvCZTm;2026-10-27;Livré;Livré;0;2026-10-30;2026-10-30 13:02
+FR261042c;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=dH62hrwhuCypwzE8Q;2026-10-27;Livré;Livré;0;2026-10-27;2026-10-30 13:02
+FR261065;HEP;https://myportal.heppner-group.com/tracking/RlIyNjEwNjUmNTkzMTAmRlI%3D;2026-10-29;mise en livraison;En cours;0;;2026-10-30 13:02
+SA26255;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=WRgEaJAvIg3NFe53C;2026-10-29;;En retard;1;;2026-10-30 13:03
+FR261066;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=Y2lLt3VOkYGddg9dR;2026-10-30;Livré;Livré;0;2026-10-30;2026-10-30 13:03
+FR261064;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=4mOiwDNRBjzDgugCX;2026-10-30;Livré;Livré;0;2026-10-29;2026-10-30 13:03
+SA26258;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=84uefZAk0l6hTSZfV;2026-11-02;;À vérifier;0;;2026-10-30 13:03
+SA26259;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=aiizgd08yqjO5PPIn;2026-11-02;Livré;Livré;0;2026-10-30;2026-10-30 13:03
+EXSA26199;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E806817895883&requester=UPSHome/trackdetails;2026-11-02;Livré;Livré;0;2026-10-30;2026-10-30 13:03
+FR261033;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=Tuj2yuR4pN0hrkWLw;2026-11-02;;À vérifier;0;;2026-10-30 13:03
+SA26256;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=2uVfIfAdrUeWKXz34;2026-11-03;Livré;Livré;0;2026-10-30;2026-10-30 13:03
+SAMA26125;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=m0BgoZUlZep9zw680;2026-11-03;;À vérifier;0;;2026-10-30 13:03
+SAMA26122b;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=dKnMoDIkPeZcxOIhc;2026-11-03;;À vérifier;0;;2026-10-30 13:03
+FR261067;JOY;https://eschenker.dbschenker.com/app/tracking-public/?language_region=fr-FR_FR&refType=ShippersRefNo&uiMode=&refNumber=T9fAukw7kEK0Pjix6;2026-11-03;en livraison;En cours;0;;2026-10-30 13:03
+SAMA26126;VCV;http://vcv.teliway.com/suivicolis-0b31d1c81c2f29eaf6c8333d3f5ccaf8-VEO-FBL&sReference=y0qIci9xxbl3uFUBl;2026-11-03;;À vérifier;0;;2026-10-30 13:03
+EXSA26200;UPS;https://www.ups.com/track?loc=fr_FR&tracknum=1Z4V5E800405804103&requester=UPSHome/trackdetails;2026-11-06;;À vérifier;0;;2026-10-30 13:04
